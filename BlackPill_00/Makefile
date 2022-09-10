@@ -9,22 +9,22 @@ OBJS += $(OUTPUT)/stm32f4xx_ll_gpio.o
 OBJS += $(OUTPUT)/stm32f4xx_ll_utils.o
 OBJS += $(OUTPUT)/startup_stm32f411xe.o
 # CFLAGS will be passed to the compiler
-CFLAGS= -c -mcpu=$(MACH) -mthumb -mfpu=fpv4-sp-d16 -mfloat-abi=hard -I./Inc -I./STM32CubeF4/Drivers/STM32F4xx_HAL_Driver/Inc -I./STM32CubeF4/Drivers/CMSIS/Include -I./STM32CubeF4/Drivers/CMSIS/Device/ST/STM32F4xx/Include -std=gnu11 -O0 -g --specs=nano.specs -Wall -Werror -ffunction-sections -fdata-sections -DSTM32F411xE -DUSE_FULL_LL_DRIVER
-SFLAGS= -c -x assembler-with-cpp -mcpu=$(MACH) -mthumb -mfpu=fpv4-sp-d16 -mfloat-abi=hard -I./Inc -I./STM32CubeF4/Drivers/STM32F4xx_HAL_Driver/Inc -I./STM32CubeF4/Drivers/CMSIS/Include -I./STM32CubeF4/Drivers/CMSIS/Device/ST/STM32F4xx/Include -std=gnu11 -O0 -g --specs=nano.specs -Wall -Werror -ffunction-sections -fdata-sections -DSTM32F411xE -DUSE_FULL_LL_DRIVER
+CFLAGS= -c -mcpu=$(MACH) -mthumb -mfpu=fpv4-sp-d16 -mfloat-abi=hard -I./Inc -I../STM32CubeF4/Drivers/STM32F4xx_HAL_Driver/Inc -I../STM32CubeF4/Drivers/CMSIS/Include -I../STM32CubeF4/Drivers/CMSIS/Device/ST/STM32F4xx/Include -std=gnu11 -O0 -g --specs=nano.specs -Wall -Werror -ffunction-sections -fdata-sections -DSTM32F411xE -DUSE_FULL_LL_DRIVER
+SFLAGS= -c -x assembler-with-cpp -mcpu=$(MACH) -mthumb -mfpu=fpv4-sp-d16 -mfloat-abi=hard -I./Inc -I../STM32CubeF4/Drivers/STM32F4xx_HAL_Driver/Inc -I../STM32CubeF4/Drivers/CMSIS/Include -I../STM32CubeF4/Drivers/CMSIS/Device/ST/STM32F4xx/Include -std=gnu11 -O0 -g --specs=nano.specs -Wall -Werror -ffunction-sections -fdata-sections -DSTM32F411xE -DUSE_FULL_LL_DRIVER
 LDFLAGS= -mcpu=$(MACH) -mthumb -mfpu=fpv4-sp-d16 -mfloat-abi=hard --specs=nano.specs --specs=nosys.specs -TSTM32F411CEUX_FLASH.ld -Wl,-Map=$(OUTPUT)/$(BIN).map -Wl,--gc-sections -static
 # Target: Dependencies
 all: $(OUTPUT)/$(BIN).elf
 
-$(OUTPUT)/%.o: ./STM32CubeF4/Drivers/STM32F4xx_HAL_Driver/Src/%.c
+$(OUTPUT)/%.o: ../STM32CubeF4/Drivers/STM32F4xx_HAL_Driver/Src/%.c
 	$(CC) $(CFLAGS) $< -o $@
 
 $(OUTPUT)/%.o: ./Src/%.c
 	$(CC) $(CFLAGS) $< -o $@
 
-$(OUTPUT)/%.o: ./STM32CubeF4/Drivers/CMSIS/Device/ST/STM32F4xx/Source/Templates/%.c
+$(OUTPUT)/%.o: ../STM32CubeF4/Drivers/CMSIS/Device/ST/STM32F4xx/Source/Templates/%.c
 	$(CC) $(CFLAGS) $< -o $@
 
-$(OUTPUT)/%.o: ./STM32CubeF4/Drivers/CMSIS/Device/ST/STM32F4xx/Source/Templates/gcc/%.s
+$(OUTPUT)/%.o: ../STM32CubeF4/Drivers/CMSIS/Device/ST/STM32F4xx/Source/Templates/gcc/%.s
 	$(CC) $(SFLAGS) $< -o $@
 
 $(OUTPUT)/$(BIN).elf: $(OBJS)
