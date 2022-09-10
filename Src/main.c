@@ -44,13 +44,6 @@ int main(void)
     return 0;
 }
 
-void assert_failed(uint8_t *file, uint32_t line)
-{
-    GPIOC->MODER |= GPIO_MODER_MODER13_0;
-    while (1)
-        ; // Infinite loop; Consider replacing with printf() later on for error handling
-}
-
 void LEDInit()
 {
     LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOC);
