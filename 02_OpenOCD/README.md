@@ -1,4 +1,4 @@
-# 01 OpenOCD
+# 02 OpenOCD
 Basic setup of how to introduce the OpenOCD debug using the Cortex-Debug extension
 ## launch.json file
 - Remember to have the Cortex-Debug extension installed and enabled (check the installation check-list from the STM32F411_BlackPill_Series level)
