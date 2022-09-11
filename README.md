@@ -7,6 +7,7 @@ Everything around the STM32F411 BlackPill from WeAct
 - [STM32CubeProgrammer](https://www.st.com/en/development-tools/stm32cubeprog.html)
 - [VSCode](https://code.visualstudio.com/download)
 - [Python](https://www.python.org/downloads/)
+- [OpenOCD](https://github.com/ilg-archived/openocd/releases/download/v0.10.0-12-20190422/gnu-mcu-eclipse-openocd-0.10.0-12-20190422-2015-win64.zip)
 
 ## Set the paths in the environmental variables
 - Add STM32_Programmer_CLI path as a user variable within the Environment Variables under Windows
