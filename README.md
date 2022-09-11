@@ -8,6 +8,7 @@ Everything around the STM32F411 BlackPill from WeAct
 - [VSCode](https://code.visualstudio.com/download)
 - [Python](https://www.python.org/downloads/)
 - [OpenOCD](https://github.com/ilg-archived/openocd/releases/download/v0.10.0-12-20190422/gnu-mcu-eclipse-openocd-0.10.0-12-20190422-2015-win64.zip)
+- > code --install-extension marus25.cortex-debug
 
 ## Set the paths in the environmental variables
 - Add STM32_Programmer_CLI path as a user variable within the Environment Variables under Windows
