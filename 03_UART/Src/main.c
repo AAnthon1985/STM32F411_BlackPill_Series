@@ -2,11 +2,10 @@
  ******************************************************************************
  * @file           : main.c
  * @author         : Alexander Anthon
- * @brief          : Minimalistic program to toggle an LED and makefile change to enable OpenOCD debug
+ * @brief          : Minimalistic program to send data via UART
  ******************************************************************************
  * @attention
- *                  Program toggles D2
- *                  D2 sits on GPIOC pin 13
+ *                  Program toggles D2 and sends data via UART2
  ******************************************************************************
  */
 
