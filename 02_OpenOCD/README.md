@@ -1,6 +1,7 @@
 # 01 OpenOCD
 Basic setup of how to introduce the OpenOCD debug using the Cortex-Debug extension
 ## launch.json file
+- Create a lunch.json file within your .vscode folder. Copy and paste the following text into your .json file
 ```
 {
     // Use IntelliSense to learn about possible attributes.
