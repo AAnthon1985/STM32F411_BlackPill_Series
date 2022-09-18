@@ -47,7 +47,7 @@ int main(void)
     {
         if (flag)
         {
-            LL_GPIO_SetOutputPin(GPIOC, LL_GPIO_PIN_13);
+            LL_GPIO_ResetOutputPin(GPIOC, LL_GPIO_PIN_13);
             printf("Flag %d\r\n", flag);
             LCD_cmd(LCD_CLEAR_DISPLAY, INSTRUCTION);
             LL_mDelay(5);
@@ -57,7 +57,7 @@ int main(void)
         }
         else
         {
-            LL_GPIO_ResetOutputPin(GPIOC, LL_GPIO_PIN_13);
+            LL_GPIO_SetOutputPin(GPIOC, LL_GPIO_PIN_13);
             printf("Flag %d\r\n", flag);
             LCD_cmd(LCD_CLEAR_DISPLAY, INSTRUCTION);
             LL_mDelay(5);
