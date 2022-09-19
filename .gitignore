@@ -1,4 +1,5 @@
-.vscode
+*.json
+!launch.json
 *.docx
 
 *.elf
