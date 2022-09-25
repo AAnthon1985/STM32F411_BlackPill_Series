@@ -7,7 +7,7 @@
         {
             "name": "Cortex Debug",
             "cwd": "${workspaceFolder}",
-            "executable": "./04_HD44780/build/main.elf",    // Needs to point to the active project
+            "executable": "./05_ADC/build/main.elf",    // Needs to point to the active project
             "request": "launch",
             "type": "cortex-debug",
             "servertype": "openocd",
@@ -16,7 +16,7 @@
                 "interface/stlink-v2.cfg",
                 "target/stm32f4x.cfg"
             ],
-            "svdFile": "./04_HD44780/STM32F411.svd" //  Needs to point to the active project
+            "svdFile": "./05_ADC/STM32F411.svd" //  Needs to point to the active project
         }
     ]
 }

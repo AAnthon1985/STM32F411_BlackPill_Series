@@ -1,2 +1,2 @@
-# 04 HD44780
-Basic setup of how to use the I2C peripheral with the HD44780 LCD as a slave
+# 05 ADC
+Basic setup of how to use a single conversion ADC reading on PA1, and then send the data to the UART terminal

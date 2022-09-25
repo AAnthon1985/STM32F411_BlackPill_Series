@@ -41,7 +41,7 @@ void HD44780Init(void)
 	LL_mDelay(1); // 1ms
 
 	LCD_setcursor(0, 1);
-	LCD_send("Hello");
+	LCD_send("Init done");
 }
 
 void LCD_cmd(uint8_t data, uint8_t command)

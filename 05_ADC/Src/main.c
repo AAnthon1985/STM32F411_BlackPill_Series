@@ -38,6 +38,7 @@ int __io_putchar(int ch)
 
 char flag = 1;
 char timer_triggered = 0;
+uint32_t adc_value = 0;
 
 int main(void)
 {
@@ -57,7 +58,7 @@ int main(void)
             if (flag)
             {
                 LL_GPIO_ResetOutputPin(GPIOC, LL_GPIO_PIN_13);
-                printf("Flag %d\r\n", flag);
+                printf("ADC reading: %ld\r\n", adc_value);
                 LCD_cmd(LCD_CLEAR_DISPLAY, INSTRUCTION);
                 LL_mDelay(5);
                 LCD_setcursor(0, 1);
@@ -66,7 +67,7 @@ int main(void)
             else
             {
                 LL_GPIO_SetOutputPin(GPIOC, LL_GPIO_PIN_13);
-                printf("Flag %d\r\n", flag);
+                printf("ADC reading: %ld\r\n", adc_value);
                 LCD_cmd(LCD_CLEAR_DISPLAY, INSTRUCTION);
                 LL_mDelay(5);
                 LCD_setcursor(0, 1);
@@ -157,9 +158,8 @@ void TIM2Init(void) {
     LL_TIM_Init(TIM2, &TIM2_InitStruct);
 
     LL_TIM_EnableARRPreload(TIM2);
-    LL_TIM_EnableIT_UPDATE(TIM2);
 
-    __NVIC_EnableIRQ(TIM2_IRQn);
+    LL_TIM_SetTriggerOutput(TIM2, LL_TIM_TRGO_UPDATE);
 
     LL_TIM_EnableCounter(TIM2);
 
@@ -167,32 +167,41 @@ void TIM2Init(void) {
 }
 
 void ADCInit(void) {
-    // LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOA);
-    // LL_GPIO_InitTypeDef GPIO_InitStruct = {0};
-    // GPIO_InitStruct.Pin = LL_GPIO_PIN_0;
-    // GPIO_InitStruct.Mode = LL_GPIO_MODE_ANALOG;
-    // GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
-    // LL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+    LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOA);
+    LL_GPIO_InitTypeDef GPIO_InitStruct = {0};
+    GPIO_InitStruct.Pin = LL_GPIO_PIN_1;
+    GPIO_InitStruct.Mode = LL_GPIO_MODE_ANALOG;
+    GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
+    LL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
-    // LL_APB2_GRP1_EnableClock(LL_APB2_GRP1_PERIPH_ADC1);
-    // LL_ADC_InitTypeDef ADC1_InitStruct = {0};
-    // ADC1_InitStruct.SequencersScanMode = LL_ADC_SEQ_SCAN_DISABLE;
-    // ADC1_InitStruct.Resolution = LL_ADC_RESOLUTION_12B;
-    // ADC1_InitStruct.DataAlignment = LL_ADC_DATA_ALIGN_RIGHT;
-    // LL_ADC_Init(ADC1, &ADC1_InitStruct);
+    LL_APB2_GRP1_EnableClock(LL_APB2_GRP1_PERIPH_ADC1);
+    LL_ADC_InitTypeDef ADC1_InitStruct = {0};
+    ADC1_InitStruct.SequencersScanMode = LL_ADC_SEQ_SCAN_DISABLE;
+    ADC1_InitStruct.Resolution = LL_ADC_RESOLUTION_12B;
+    ADC1_InitStruct.DataAlignment = LL_ADC_DATA_ALIGN_RIGHT;
+    LL_ADC_Init(ADC1, &ADC1_InitStruct);
 
-    // LL_ADC_REG_InitTypeDef ADC_REG_InitStruct = {0};
-    // ADC_REG_InitStruct.ContinuousMode = LL_ADC_REG_CONV_SINGLE;
-    // ADC_REG_InitStruct.DMATransfer = LL_ADC_REG_DMA_TRANSFER_NONE;
-    // ADC_REG_InitStruct.SequencerDiscont = LL_ADC_REG_SEQ_DISCONT_DISABLE;
-    // ADC_REG_InitStruct.SequencerLength = LL_ADC_REG_SEQ_SCAN_DISABLE;
-    // ADC_REG_InitStruct.TriggerSource = LL_ADC_REG_TRIG_SOFTWARE;    // Set the corresponding bit in the systick ISR to trigger the ADC
-    // // ToDo
+    LL_ADC_REG_InitTypeDef ADC_REG_InitStruct = {0};
+    ADC_REG_InitStruct.ContinuousMode = LL_ADC_REG_CONV_SINGLE;
+    ADC_REG_InitStruct.DMATransfer = LL_ADC_REG_DMA_TRANSFER_NONE;
+    ADC_REG_InitStruct.SequencerDiscont = LL_ADC_REG_SEQ_DISCONT_DISABLE;
+    ADC_REG_InitStruct.SequencerLength = LL_ADC_REG_SEQ_SCAN_DISABLE;
+    ADC_REG_InitStruct.TriggerSource = LL_ADC_REG_TRIG_EXT_TIM2_TRGO;
+    LL_ADC_REG_Init(ADC1, &ADC_REG_InitStruct);
+    LL_ADC_REG_StartConversionExtTrig(ADC1,LL_ADC_REG_TRIG_EXT_RISING);
+    LL_ADC_REG_SetSequencerRanks(ADC1, LL_ADC_REG_RANK_1, LL_ADC_CHANNEL_1);
+    LL_ADC_SetChannelSamplingTime(ADC1, LL_ADC_CHANNEL_1, LL_ADC_SAMPLINGTIME_56CYCLES);
+    LL_ADC_EnableIT_EOCS(ADC1);
+    
+    __NVIC_EnableIRQ(ADC_IRQn);
+
+    LL_ADC_Enable(ADC1);
+
 
 }
 
-void TIM2_IRQHandler(void) {
-    LL_TIM_ClearFlag_UPDATE(TIM2);
+void ADC_IRQHandler(void) {
+    adc_value = ADC1->DR;
     timer_triggered = 1;
     if (flag)
         {

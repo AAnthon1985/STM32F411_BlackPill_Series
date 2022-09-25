@@ -12,6 +12,7 @@ OBJS += $(OUTPUT)/stm32f4xx_ll_usart.o
 OBJS += $(OUTPUT)/stm32f4xx_ll_rcc.o
 OBJS += $(OUTPUT)/stm32f4xx_ll_i2c.o
 OBJS += $(OUTPUT)/stm32f4xx_ll_tim.o
+OBJS += $(OUTPUT)/stm32f4xx_ll_adc.o
 OBJS += $(OUTPUT)/syscalls.o
 OBJS += $(OUTPUT)/startup_stm32f411xe.o
 # CFLAGS will be passed to the compiler
