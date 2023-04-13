@@ -1,0 +1,15 @@
+{
+    "files.associations": {
+        "stm32f4xx.h": "c",
+        "stdint.h": "c",
+        "stm32f411xe.h": "c",
+        "system_stm32f4xx.h": "c",
+        "stm32f4xx_ll_gpio.h": "c",
+        "stm32f4xx_ll_utils.h": "c",
+        "lcd.h": "c",
+        "hd44780.h": "c",
+        "stm32f4xx_ll_adc.h": "c",
+        "stm32f4xx_ll_tim.h": "c",
+        "stm32f4xx_ll_i2c.h": "c"
+    }
+}
