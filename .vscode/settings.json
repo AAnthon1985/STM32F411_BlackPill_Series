@@ -10,6 +10,12 @@
         "hd44780.h": "c",
         "stm32f4xx_ll_adc.h": "c",
         "stm32f4xx_ll_tim.h": "c",
-        "stm32f4xx_ll_i2c.h": "c"
+        "stm32f4xx_ll_i2c.h": "c",
+        "stm32f4xx_ll_rcc.h": "c",
+        "stm32f4xx_ll_bus.h": "c",
+        "task.h": "c",
+        "freertos.h": "c",
+        "portable.h": "c",
+        "list.h": "c"
     }
 }

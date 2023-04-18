@@ -7,27 +7,54 @@ OBJS = $(OUTPUT)/main.o
 OBJS += $(OUTPUT)/system_stm32f4xx.o
 OBJS += $(OUTPUT)/stm32f4xx_ll_gpio.o
 OBJS += $(OUTPUT)/stm32f4xx_ll_utils.o
-OBJS += $(OUTPUT)/stm32f4xx_ll_usart.o
-OBJS += $(OUTPUT)/stm32f4xx_ll_rcc.o
 OBJS += $(OUTPUT)/syscalls.o
+OBJS += $(OUTPUT)/tasks.o
+OBJS += $(OUTPUT)/list.o
+OBJS += $(OUTPUT)/port.o
+OBJS += $(OUTPUT)/heap_4.o
 OBJS += $(OUTPUT)/startup_stm32f411xe.o
+
+# Includes
+STM32CUBE_DIR = ../STM32CubeF4/Drivers
+C_INCLUDES = -I./Inc
+C_INCLUDES += -I$(STM32CUBE_DIR)/STM32F4xx_HAL_Driver/Inc
+C_INCLUDES += -I$(STM32CUBE_DIR)/CMSIS/Include 
+C_INCLUDES += -I$(STM32CUBE_DIR)/CMSIS/Device/ST/STM32F4xx/Include
+C_INCLUDES += -I./ThirdParty/FreeRTOS/include
+C_INCLUDES += -I./ThirdParty/FreeRTOS/portable/GCC/ARM_CM4F
+
+# Defines
+C_DEFS = -DSTM32F411xE
+C_DEFS += -DUSE_FULL_LL_DRIVER
+
+
 # CFLAGS will be passed to the compiler
-CFLAGS= -c -mcpu=$(MACH) -mthumb -mfpu=fpv4-sp-d16 -mfloat-abi=hard -I./Inc -I../STM32CubeF4/Drivers/STM32F4xx_HAL_Driver/Inc -I../STM32CubeF4/Drivers/CMSIS/Include -I../STM32CubeF4/Drivers/CMSIS/Device/ST/STM32F4xx/Include -std=gnu11 -O0 -g --specs=nano.specs -Wall -Werror -ffunction-sections -fdata-sections -DSTM32F411xE -DUSE_FULL_LL_DRIVER
-SFLAGS= -c -x assembler-with-cpp -mcpu=$(MACH) -mthumb -mfpu=fpv4-sp-d16 -mfloat-abi=hard -I./Inc -I../STM32CubeF4/Drivers/STM32F4xx_HAL_Driver/Inc -I../STM32CubeF4/Drivers/CMSIS/Include -I../STM32CubeF4/Drivers/CMSIS/Device/ST/STM32F4xx/Include -std=gnu11 -O0 -g --specs=nano.specs -Wall -Werror -ffunction-sections -fdata-sections -DSTM32F411xE -DUSE_FULL_LL_DRIVER
+CFLAGS= -c -mcpu=$(MACH) -mthumb -mfpu=fpv4-sp-d16 -mfloat-abi=hard $(C_INCLUDES) -std=gnu11 -O0 -g --specs=nano.specs -Wall -Werror -ffunction-sections -fdata-sections $(C_DEFS)
+SFLAGS= -c -x assembler-with-cpp -mcpu=$(MACH) -mthumb -mfpu=fpv4-sp-d16 -mfloat-abi=hard $(C_INCLUDES) -std=gnu11 -O0 -g --specs=nano.specs -Wall -Werror -ffunction-sections -fdata-sections $(C_DEFS)
 LDFLAGS= -mcpu=$(MACH) -mthumb -mfpu=fpv4-sp-d16 -mfloat-abi=hard --specs=nano.specs --specs=nosys.specs -TSTM32F411CEUX_FLASH.ld -Wl,-Map=$(OUTPUT)/$(BIN).map -Wl,--gc-sections -static
+
 # Target: Dependencies
 all: $(OUTPUT)/$(BIN).elf
 
-$(OUTPUT)/%.o: ../STM32CubeF4/Drivers/STM32F4xx_HAL_Driver/Src/%.c
+$(OUTPUT)/%.o: $(STM32CUBE_DIR)/STM32F4xx_HAL_Driver/Src/%.c
 	$(CC) $(CFLAGS) $< -o $@
 
 $(OUTPUT)/%.o: ./Src/%.c
 	$(CC) $(CFLAGS) $< -o $@
 
-$(OUTPUT)/%.o: ../STM32CubeF4/Drivers/CMSIS/Device/ST/STM32F4xx/Source/Templates/%.c
+$(OUTPUT)/%.o: $(STM32CUBE_DIR)/CMSIS/Device/ST/STM32F4xx/Source/Templates/%.c
 	$(CC) $(CFLAGS) $< -o $@
 
-$(OUTPUT)/%.o: ../STM32CubeF4/Drivers/CMSIS/Device/ST/STM32F4xx/Source/Templates/gcc/%.s
+$(OUTPUT)/%.o: ./ThirdParty/FreeRTOS/%.c
+	$(CC) $(CFLAGS) $< -o $@
+
+$(OUTPUT)/%.o: ./ThirdParty/FreeRTOS/portable/GCC/ARM_CM4F/%.c
+	$(CC) $(CFLAGS) $< -o $@
+
+$(OUTPUT)/%.o: ./ThirdParty/FreeRTOS/portable/MemMang/%.c
+	$(CC) $(CFLAGS) $< -o $@
+
+$(OUTPUT)/%.o: $(STM32CUBE_DIR)/CMSIS/Device/ST/STM32F4xx/Source/Templates/gcc/%.s
 	$(CC) $(SFLAGS) $< -o $@
 
 $(OUTPUT)/$(BIN).elf: $(OBJS)
