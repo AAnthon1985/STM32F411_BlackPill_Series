@@ -37,11 +37,9 @@ static void task2_handler(void* parameters);
 
 int main(void)
 {
-    LL_Init1msTick(SystemCoreClock);
     LEDInit();
     UARTInit();
     LL_GPIO_SetOutputPin(GPIOC, LL_GPIO_PIN_13);
-    char flag = 1;
     TaskHandle_t task1_handle;
     TaskHandle_t task2_handle;
     BaseType_t status_task;
@@ -60,20 +58,7 @@ int main(void)
     // If the control scheme comes here, then the launch of the scheduler has failed due to insufficient memory in the heap
 
     /* Loop forever */
-    for (;;)
-    {
-        if (flag)
-        {
-            LL_GPIO_SetOutputPin(GPIOC, LL_GPIO_PIN_13);
-            flag = 0;
-        }
-        else
-        {
-            LL_GPIO_ResetOutputPin(GPIOC, LL_GPIO_PIN_13);
-            flag = 1;
-        }
-        LL_mDelay(1000);
-    }
+    for (;;);
 
     return 0;
 }
@@ -119,6 +104,7 @@ void UARTInit() {
 static void task1_handler(void* parameters) {
     while(1) {
         printf("%s\r\n", (char*)parameters);
+        LL_GPIO_SetOutputPin(GPIOC, LL_GPIO_PIN_13);
         taskYIELD();
     }
 
@@ -127,6 +113,7 @@ static void task1_handler(void* parameters) {
 static void task2_handler(void* parameters) {
     while(1) {
         printf("%s\r\n", (char*)parameters);
+        LL_GPIO_ResetOutputPin(GPIOC, LL_GPIO_PIN_13);
         taskYIELD();
     }
 }
