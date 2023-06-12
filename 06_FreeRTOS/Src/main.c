@@ -44,6 +44,8 @@ int main(void)
     TaskHandle_t task2_handle;
     BaseType_t status_task;
 
+    vInitPrioGroupValue();
+
     // Enable cycle counter
     DWT->CTRL |= DWT_CTRL_CYCCNTENA_Msk;
 
