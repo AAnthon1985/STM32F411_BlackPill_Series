@@ -14,16 +14,26 @@ OBJS += $(OUTPUT)/tasks.o
 OBJS += $(OUTPUT)/list.o
 OBJS += $(OUTPUT)/port.o
 OBJS += $(OUTPUT)/heap_4.o
+OBJS += $(OUTPUT)/SEGGER_SYSVIEW.o
+OBJS += $(OUTPUT)/SEGGER_RTT.o
+OBJS += $(OUTPUT)/SEGGER_SYSVIEW_FreeRTOS.o
+OBJS += $(OUTPUT)/SEGGER_SYSVIEW_Config_FreeRTOS.o
+OBJS += $(OUTPUT)/SEGGER_RTT_ASM_ARMv7M.o
 OBJS += $(OUTPUT)/startup_stm32f411xe.o
 
 # Includes
 STM32CUBE_DIR = ../STM32CubeF4/Drivers
+FREERTOS_DIR = ./ThirdParty/FreeRTOS
+SEGGER_DIR = ./ThirdParty/SEGGER
 C_INCLUDES = -I./Inc
 C_INCLUDES += -I$(STM32CUBE_DIR)/STM32F4xx_HAL_Driver/Inc
 C_INCLUDES += -I$(STM32CUBE_DIR)/CMSIS/Include 
 C_INCLUDES += -I$(STM32CUBE_DIR)/CMSIS/Device/ST/STM32F4xx/Include
-C_INCLUDES += -I./ThirdParty/FreeRTOS/include
-C_INCLUDES += -I./ThirdParty/FreeRTOS/portable/GCC/ARM_CM4F
+C_INCLUDES += -I$(FREERTOS_DIR)/include
+C_INCLUDES += -I$(FREERTOS_DIR)/portable/GCC/ARM_CM4F
+C_INCLUDES += -I$(SEGGER_DIR)/OS
+C_INCLUDES += -I$(SEGGER_DIR)/SEGGER
+C_INCLUDES += -I$(SEGGER_DIR)/Config
 
 # Defines
 C_DEFS = -DSTM32F411xE
@@ -54,6 +64,21 @@ $(OUTPUT)/%.o: ./ThirdParty/FreeRTOS/portable/GCC/ARM_CM4F/%.c
 	$(CC) $(CFLAGS) $< -o $@
 
 $(OUTPUT)/%.o: ./ThirdParty/FreeRTOS/portable/MemMang/%.c
+	$(CC) $(CFLAGS) $< -o $@
+
+$(OUTPUT)/%.o: ./ThirdParty/SEGGER/Config/%.c
+	$(CC) $(CFLAGS) $< -o $@
+
+$(OUTPUT)/%.o: ./ThirdParty/SEGGER/OS/%.c
+	$(CC) $(CFLAGS) $< -o $@
+
+$(OUTPUT)/%.o: ./ThirdParty/SEGGER/Config/%.c
+	$(CC) $(CFLAGS) $< -o $@
+
+$(OUTPUT)/%.o: ./ThirdParty/SEGGER/SEGGER/%.c
+	$(CC) $(CFLAGS) $< -o $@
+
+$(OUTPUT)/%.o: ./ThirdParty/SEGGER/SEGGER/%.S
 	$(CC) $(CFLAGS) $< -o $@
 
 $(OUTPUT)/%.o: $(STM32CUBE_DIR)/CMSIS/Device/ST/STM32F4xx/Source/Templates/gcc/%.s

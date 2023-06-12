@@ -43,6 +43,12 @@ int main(void)
     TaskHandle_t task1_handle;
     TaskHandle_t task2_handle;
     BaseType_t status_task;
+
+    // Enable cycle counter
+    DWT->CTRL |= DWT_CTRL_CYCCNTENA_Msk;
+
+    SEGGER_SYSVIEW_Conf();
+    SEGGER_SYSVIEW_Start();
     
     status_task = xTaskCreate(task1_handler, "Task-1", 200, "Hello world from Task-1", 2, &task1_handle);
 
@@ -105,7 +111,7 @@ static void task1_handler(void* parameters) {
     while(1) {
         printf("%s\r\n", (char*)parameters);
         LL_GPIO_SetOutputPin(GPIOC, LL_GPIO_PIN_13);
-        taskYIELD();
+        // taskYIELD();
     }
 
 }
@@ -114,6 +120,6 @@ static void task2_handler(void* parameters) {
     while(1) {
         printf("%s\r\n", (char*)parameters);
         LL_GPIO_ResetOutputPin(GPIOC, LL_GPIO_PIN_13);
-        taskYIELD();
+        // taskYIELD();
     }
 }
