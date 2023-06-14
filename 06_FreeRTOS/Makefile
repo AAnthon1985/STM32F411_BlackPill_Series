@@ -18,6 +18,7 @@ OBJS += $(OUTPUT)/SEGGER_SYSVIEW.o
 OBJS += $(OUTPUT)/SEGGER_RTT.o
 OBJS += $(OUTPUT)/SEGGER_SYSVIEW_FreeRTOS.o
 OBJS += $(OUTPUT)/SEGGER_SYSVIEW_Config_FreeRTOS.o
+OBJS += $(OUTPUT)/segger_uart.o
 OBJS += $(OUTPUT)/SEGGER_RTT_ASM_ARMv7M.o
 OBJS += $(OUTPUT)/startup_stm32f411xe.o
 
@@ -34,6 +35,7 @@ C_INCLUDES += -I$(FREERTOS_DIR)/portable/GCC/ARM_CM4F
 C_INCLUDES += -I$(SEGGER_DIR)/OS
 C_INCLUDES += -I$(SEGGER_DIR)/SEGGER
 C_INCLUDES += -I$(SEGGER_DIR)/Config
+C_INCLUDES += -I$(SEGGER_DIR)/Rec
 
 # Defines
 C_DEFS = -DSTM32F411xE
@@ -76,6 +78,9 @@ $(OUTPUT)/%.o: ./ThirdParty/SEGGER/Config/%.c
 	$(CC) $(CFLAGS) $< -o $@
 
 $(OUTPUT)/%.o: ./ThirdParty/SEGGER/SEGGER/%.c
+	$(CC) $(CFLAGS) $< -o $@
+
+$(OUTPUT)/%.o: ./ThirdParty/SEGGER/Rec/%.c
 	$(CC) $(CFLAGS) $< -o $@
 
 $(OUTPUT)/%.o: ./ThirdParty/SEGGER/SEGGER/%.S
