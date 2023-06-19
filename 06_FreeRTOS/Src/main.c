@@ -50,9 +50,8 @@ int main(void)
 
     // Enable cycle counter
     DWT->CTRL |= DWT_CTRL_CYCCNTENA_Msk;
-
+    
     SEGGER_UART_init(115200);
-
     SEGGER_SYSVIEW_Conf();
     // SEGGER_SYSVIEW_Start();
     
@@ -109,17 +108,17 @@ void LEDInit()
 //     UART2Init.TransferDirection = LL_USART_DIRECTION_TX_RX;
 //     UART2Init.HardwareFlowControl = LL_USART_HWCONTROL_NONE;
 //     UART2Init.OverSampling = LL_USART_OVERSAMPLING_16;
-//     LL_USART_Init(USART2, &UART2Init);
-//     LL_USART_Enable(USART2);
+    // LL_USART_Init(USART2, &UART2Init);
+    // LL_USART_Enable(USART2);
 // }
 
 static void task1_handler(void* parameters) {
     char msg[100];
     while(1) {
-        snprintf(msg, 100, "%s\r\n", (char*)parameters);
+        snprintf(msg,100,"%s\n", (char*)parameters);
         SEGGER_SYSVIEW_PrintfTarget(msg);
         // printf("%s\r\n", (char*)parameters);
-        LL_GPIO_SetOutputPin(GPIOC, LL_GPIO_PIN_13);
+        // LL_GPIO_SetOutputPin(GPIOC, LL_GPIO_PIN_13);
         taskYIELD();
     }
 
@@ -128,10 +127,10 @@ static void task1_handler(void* parameters) {
 static void task2_handler(void* parameters) {
     char msg[100];
     while(1) {
-        snprintf(msg, 100, "%s\r\n", (char*)parameters);
+        snprintf(msg,100,"%s\n", (char*)parameters);
         SEGGER_SYSVIEW_PrintfTarget(msg);
         // printf("%s\r\n", (char*)parameters);
-        LL_GPIO_ResetOutputPin(GPIOC, LL_GPIO_PIN_13);
+        // LL_GPIO_ResetOutputPin(GPIOC, LL_GPIO_PIN_13);
         taskYIELD();
     }
 }

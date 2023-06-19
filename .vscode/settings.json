@@ -16,6 +16,7 @@
         "task.h": "c",
         "freertos.h": "c",
         "portable.h": "c",
-        "list.h": "c"
+        "list.h": "c",
+        "stdio.h": "c"
     }
 }

@@ -141,6 +141,7 @@ Additional information:
 #define SEGGER_SYSVIEW_C  // For EXTERN statements in SEGGER_SYSVIEW.h
 
 #include <string.h>
+#include "stdio.h"
 #include <stdlib.h>
 #include <stdarg.h>
 #include "SEGGER_SYSVIEW_Int.h"
@@ -2889,6 +2890,7 @@ void SEGGER_SYSVIEW_PrintfTargetEx(const char* s, U32 Options, ...) {
 *  Parameters
 *    s        - String to be formatted.
 */
+
 void SEGGER_SYSVIEW_PrintfTarget(const char* s, ...) {
   va_list ParamList;
 

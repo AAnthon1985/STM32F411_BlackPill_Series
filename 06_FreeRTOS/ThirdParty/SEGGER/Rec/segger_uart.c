@@ -85,6 +85,9 @@ typedef UART_ON_RX_FUNC* UART_ON_RX_FUNC_P;
 static UART_ON_RX_FUNC_P _cbOnRx;
 static UART_ON_TX_FUNC_P _cbOnTx;
 
+#include <stdio.h>
+#include "stm32f4xx_ll_gpio.h"
+
 
 void HIF_UART_Init(uint32_t Baudrate, UART_ON_TX_FUNC_P cbOnTx, UART_ON_RX_FUNC_P cbOnRx);
 
@@ -110,6 +113,7 @@ static void _StartSysView(void) {
 }
 
 static void _cbOnUARTRx(U8 Data) {
+  LL_GPIO_ResetOutputPin(GPIOC, LL_GPIO_PIN_13);
   if (_SVInfo.NumBytesHelloRcvd < _SERVER_HELLO_SIZE) {  // Not all bytes of <Hello> message received by SysView yet?
     _SVInfo.NumBytesHelloRcvd++;
     goto Done;
@@ -121,6 +125,8 @@ Done:
 }
 
 static int _cbOnUARTTx(U8* pChar) {
+  printf("%s\r\n", "Inside _cbOnUARTTx\r\n");
+  LL_GPIO_SetOutputPin(GPIOC, LL_GPIO_PIN_13);
   int r;
 
   if (_SVInfo.NumBytesHelloSent < _TARGET_HELLO_SIZE) {  // Not all bytes of <Hello> message sent to SysView yet?
@@ -220,7 +226,7 @@ void HIF_UART_Init(uint32_t Baudrate, UART_ON_TX_FUNC_P cbOnTx, UART_ON_RX_FUNC_
   uint32_t v;
   uint32_t Div;
   //
-  // Configure USART RX/TX pins for alternate function AF7
+  // Configure USART RX/TX (PA2, PA3) pins for alternate function AF7 - math checked and approved
   //
   RCC_APB1ENR |= (1 <<  17);        // Enable USART2 clock
   RCC_AHB1ENR |= (1 <<  0);        // Enable IO port A clock
@@ -229,14 +235,14 @@ void HIF_UART_Init(uint32_t Baudrate, UART_ON_TX_FUNC_P cbOnTx, UART_ON_RX_FUNC_
   v |=   ((7UL << ((GPIO_UART_TX_BIT) << 2)) | (7UL << ((GPIO_UART_RX_BIT) << 2)));
   GPIO_AFRL = v;
   //
-  // Configure USART RX/TX pins for alternate function usage
+  // Configure USART RX/TX (PA2, PA3) pins for alternate function usage - math checked and approved
   //
   v  = GPIO_MODER;
   v &= ~((3UL << (GPIO_UART_TX_BIT << 1)) | (3UL << (GPIO_UART_RX_BIT << 1)));
   v |=  ((2UL << (GPIO_UART_TX_BIT << 1)) | (2UL << (GPIO_UART_RX_BIT << 1)));         // PA10: alternate function
   GPIO_MODER = v;
   //
-  // Initialize USART
+  // Initialize USART - looks correct, too
   //
   USART_CR1 = 0
             | (1 << 15)                         // OVER8  = 1; Oversampling by 8
@@ -258,7 +264,7 @@ void HIF_UART_Init(uint32_t Baudrate, UART_ON_TX_FUNC_P cbOnTx, UART_ON_RX_FUNC_
   // Set baudrate
   //
   Div = Baudrate * 8;                       // We use 8x oversampling.
-  Div = ((2 * (UART_BASECLK)) / Div) + 1;   // Calculate divider for baudrate and round it correctly. This is necessary to get a tolerance as small as possible.
+  Div = ((2 * (16000000UL)) / Div) + 1;   // Calculate divider for baudrate and round it correctly. This is necessary to get a tolerance as small as possible.
   Div = Div / 2;
   if (Div > 0xFFF) {
     Div = 0xFFF;        // Limit to 12 bit (mantissa in BRR)
