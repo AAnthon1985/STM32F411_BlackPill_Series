@@ -4,7 +4,6 @@ MACH=cortex-m4
 OUTPUT=build
 BIN = main
 OBJS = $(OUTPUT)/main.o
-OBJS += $(OUTPUT)/HD44780.o
 OBJS += $(OUTPUT)/system_stm32f4xx.o
 OBJS += $(OUTPUT)/stm32f4xx_ll_gpio.o
 OBJS += $(OUTPUT)/stm32f4xx_ll_utils.o
