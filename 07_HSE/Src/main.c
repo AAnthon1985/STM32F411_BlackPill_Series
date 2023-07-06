@@ -41,7 +41,7 @@ int main(void)
     LL_RCC_SetSysClkSource(LL_RCC_SYS_CLKSOURCE_HSE);
     SystemCoreClockUpdate();
     SysTick_Config(SystemCoreClock / 8);
-    LL_RCC_SetAHBPrescaler(LL_RCC_SYSCLK_DIV_8 - 1);
+    LL_RCC_SetAHBPrescaler(LL_RCC_SYSCLK_DIV_8);
     LL_RCC_GetSystemClocksFreq(&rcc_clocks);
     LEDInit();
     UARTInit();
