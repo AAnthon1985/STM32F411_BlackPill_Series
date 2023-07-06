@@ -61,7 +61,10 @@ int main(void)
     LL_RCC_GetSystemClocksFreq(&rcc_clocks);
     LEDInit();
     UARTInit();
-    printf("Frequency: %lu\r\n", rcc_clocks.SYSCLK_Frequency);
+    printf("HCLK frequency: %lu\r\n", rcc_clocks.HCLK_Frequency);
+    printf("SYSCLK frequency: %lu\r\n", rcc_clocks.SYSCLK_Frequency);
+    printf("PCLK1 frequency: %lu\r\n", rcc_clocks.PCLK1_Frequency);
+    printf("PCLK2 frequency: %lu\r\n", rcc_clocks.PCLK2_Frequency);
     
     /* Loop forever */
     for (;;) {
