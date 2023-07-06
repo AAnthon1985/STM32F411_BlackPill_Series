@@ -5,7 +5,7 @@
  * @brief          : Minimalistic program to configure the MCU to use HSE (25MHz mounted on the PCB)
  ******************************************************************************
  * @attention
- *                  SysTick set to trigger interrupt every 1s
+ *                  SysTick set to trigger interrupt every 1ms
  ******************************************************************************
  */
 
@@ -17,6 +17,7 @@
 #include "stm32f4xx_ll_utils.h"
 #include "stm32f4xx_ll_rcc.h"
 #include "stm32f4xx_ll_usart.h"
+#include "stm32f4xx_ll_system.h"
 
 void LEDInit(void);
 void UARTInit(void);
@@ -35,13 +36,28 @@ char time_elapsed = 0;
 int main(void)
 {
     LL_RCC_ClocksTypeDef rcc_clocks;
-    /* Set up for HSE without PLL */
+    /* Set up for HSE */
     LL_RCC_HSE_Enable();
     while(LL_RCC_HSE_IsReady() != 1) {};
-    LL_RCC_SetSysClkSource(LL_RCC_SYS_CLKSOURCE_HSE);
+    LL_RCC_SetSysClkSource(LL_RCC_SYS_CLKSOURCE_PLL);
+
+      /* Set FLASH latency */
+    LL_FLASH_SetLatency(LL_FLASH_LATENCY_3);
+
+    /* Set up PLL */
+    LL_RCC_PLL_Disable();
+    while(LL_RCC_PLL_IsReady() != 0) {};
+    /* f_VCO = HSE*80/10=200MHz */
+    /* f_PLL = f_VCO/2 = 100MHz */
+    LL_RCC_PLL_ConfigDomain_SYS(LL_RCC_PLLSOURCE_HSE, LL_RCC_PLLM_DIV_10, 80, LL_RCC_PLLP_DIV_2);
+
+    LL_RCC_PLL_Enable();
+    while(LL_RCC_PLL_IsReady() != 1) {};
+
+
+    /* Update Clocks */
     SystemCoreClockUpdate();
-    SysTick_Config(SystemCoreClock / 8);
-    LL_RCC_SetAHBPrescaler(LL_RCC_SYSCLK_DIV_8 - 1);
+    SysTick_Config(SystemCoreClock / 1000);
     LL_RCC_GetSystemClocksFreq(&rcc_clocks);
     LEDInit();
     UARTInit();
@@ -50,7 +66,7 @@ int main(void)
     /* Loop forever */
     for (;;) {
       if (time_elapsed) {
-        printf("Frequency: %lu\r\n", rcc_clocks.SYSCLK_Frequency);
+        LL_GPIO_ResetOutputPin(GPIOC, LL_GPIO_PIN_13);
         time_elapsed = 0;
       }
     }
@@ -98,5 +114,6 @@ void UARTInit(void) {
 }
 
 void SysTick_Handler(void) {
-    time_elapsed = 1;
+  LL_GPIO_SetOutputPin(GPIOC, LL_GPIO_PIN_13);
+  time_elapsed = 1;
 }

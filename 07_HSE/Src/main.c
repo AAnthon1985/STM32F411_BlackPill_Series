@@ -5,7 +5,7 @@
  * @brief          : Minimalistic program to configure the MCU to use HSE (25MHz mounted on the PCB)
  ******************************************************************************
  * @attention
- *                  SysTick set to trigger interrupt every 1s
+ *                  SysTick set to trigger interrupt every 1ms
  ******************************************************************************
  */
 
@@ -17,6 +17,7 @@
 #include "stm32f4xx_ll_utils.h"
 #include "stm32f4xx_ll_rcc.h"
 #include "stm32f4xx_ll_usart.h"
+#include "stm32f4xx_ll_system.h"
 
 void LEDInit(void);
 void UARTInit(void);
@@ -39,9 +40,13 @@ int main(void)
     LL_RCC_HSE_Enable();
     while(LL_RCC_HSE_IsReady() != 1) {};
     LL_RCC_SetSysClkSource(LL_RCC_SYS_CLKSOURCE_HSE);
+
+    /* Set FLASH latency */
+    LL_FLASH_SetLatency(LL_FLASH_LATENCY_0);
+
+
     SystemCoreClockUpdate();
-    SysTick_Config(SystemCoreClock / 8);
-    LL_RCC_SetAHBPrescaler(LL_RCC_SYSCLK_DIV_8);
+    SysTick_Config(SystemCoreClock / 1000);
     LL_RCC_GetSystemClocksFreq(&rcc_clocks);
     LEDInit();
     UARTInit();
@@ -50,11 +55,10 @@ int main(void)
     /* Loop forever */
     for (;;) {
       if (time_elapsed) {
-        printf("Frequency: %lu\r\n", rcc_clocks.SYSCLK_Frequency);
+        LL_GPIO_ResetOutputPin(GPIOC, LL_GPIO_PIN_13);
         time_elapsed = 0;
       }
     }
-
     return 0;
 }
 
@@ -98,5 +102,6 @@ void UARTInit(void) {
 }
 
 void SysTick_Handler(void) {
+    LL_GPIO_SetOutputPin(GPIOC, LL_GPIO_PIN_13);
     time_elapsed = 1;
 }
