@@ -13,7 +13,7 @@ Purpose : Terminal control for Flasher using USART1 on PA9/PA10
 #include "SEGGER_RTT.h"
 #include "stm32f4xx.h"
 
-#define OS_FSYS 168000000L   // MCU core frequency of Flasher ARM Pro V4
+#define OS_FSYS 100000000L   // MCU core frequency of Flasher ARM Pro V4
 #define RCC_BASE_ADDR       0x40023800
 
 #define OFF_AHB1ENR         0x30        // AHB1 peripheral clock enable register
@@ -48,7 +48,7 @@ Purpose : Terminal control for Flasher using USART1 on PA9/PA10
 #define OFF_CR3             0x14        // Control register 3
 
 
-#define UART_BASECLK        OS_FSYS / 4       // USART2 runs on APB1 clock
+#define UART_BASECLK        OS_FSYS / 2       // USART2 runs on APB1 clock
 #define GPIO_BASE_ADDR      GPIOA_BASE_ADDR
 #define USART_BASE_ADDR     USART2_BASE_ADDR
 #define GPIO_UART_TX_BIT    2                // USART2 TX: Pin pa2
@@ -125,8 +125,6 @@ Done:
 }
 
 static int _cbOnUARTTx(U8* pChar) {
-  printf("%s\r\n", "Inside _cbOnUARTTx\r\n");
-  LL_GPIO_SetOutputPin(GPIOC, LL_GPIO_PIN_13);
   int r;
 
   if (_SVInfo.NumBytesHelloSent < _TARGET_HELLO_SIZE) {  // Not all bytes of <Hello> message sent to SysView yet?
@@ -264,7 +262,7 @@ void HIF_UART_Init(uint32_t Baudrate, UART_ON_TX_FUNC_P cbOnTx, UART_ON_RX_FUNC_
   // Set baudrate
   //
   Div = Baudrate * 8;                       // We use 8x oversampling.
-  Div = ((2 * (16000000UL)) / Div) + 1;   // Calculate divider for baudrate and round it correctly. This is necessary to get a tolerance as small as possible.
+  Div = ((2 * (UART_BASECLK)) / Div) + 1;   // Calculate divider for baudrate and round it correctly. This is necessary to get a tolerance as small as possible.
   Div = Div / 2;
   if (Div > 0xFFF) {
     Div = 0xFFF;        // Limit to 12 bit (mantissa in BRR)
