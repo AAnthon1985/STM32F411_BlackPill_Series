@@ -36,6 +36,7 @@ int __io_putchar(int ch)
 }
 
 static void task1_handler(void* parameters);
+static void task2_handler(void* parameters);
 
 int main(void)
 {
@@ -62,9 +63,6 @@ int main(void)
     LL_RCC_SetAPB1Prescaler(LL_RCC_APB1_DIV_2);
     SystemCoreClockUpdate();
 
-    SysTick_Config(SystemCoreClock / 1000);
-    NVIC_SetPriority(SysTick_IRQn, (1u << __NVIC_PRIO_BITS) - 2u);  // Set the priority higher than the PendSV priority
-
     LL_RCC_GetSystemClocksFreq(&rcc_clocks);
 
     LEDInit();
@@ -72,10 +70,13 @@ int main(void)
 
 
     TaskHandle_t task1_handle;
+    TaskHandle_t task2_handle;
     BaseType_t status_task;
 
     vInitPrioGroupValue();
 
+    // Enable Debug Exception and Monitor Control Register
+    CoreDebug->DEMCR |= CoreDebug_DEMCR_TRCENA_Msk;
     // Enable cycle counter
     DWT->CTRL |= DWT_CTRL_CYCCNTENA_Msk;
 
@@ -84,6 +85,10 @@ int main(void)
     SEGGER_SYSVIEW_Conf();
     
     status_task = xTaskCreate(task1_handler, "Task-1", 200, "Hello world from Task-1", 2, &task1_handle);
+
+    configASSERT(status_task == pdPASS);
+
+    status_task = xTaskCreate(task2_handler, "Task-2", 200, "Hello world from Task-2", 2, &task2_handle);
 
     configASSERT(status_task == pdPASS);
 
@@ -111,6 +116,15 @@ void LEDInit()
 }
 
 static void task1_handler(void* parameters) {
+    char msg[100];
+    while(1) {
+        snprintf(msg,100,"%s\n", (char*)parameters);
+        SEGGER_SYSVIEW_PrintfTarget(msg);
+        taskYIELD();
+    }
+}
+
+static void task2_handler(void* parameters) {
     char msg[100];
     while(1) {
         snprintf(msg,100,"%s\n", (char*)parameters);
