@@ -120,7 +120,7 @@ static void task1_handler(void* parameters) {
     while(1) {
         snprintf(msg,100,"%s\n", (char*)parameters);
         SEGGER_SYSVIEW_PrintfTarget(msg);
-        taskYIELD();
+        vTaskDelay(pdMS_TO_TICKS(100));
     }
 }
 
@@ -129,6 +129,6 @@ static void task2_handler(void* parameters) {
     while(1) {
         snprintf(msg,100,"%s\n", (char*)parameters);
         SEGGER_SYSVIEW_PrintfTarget(msg);
-        taskYIELD();
+        vTaskDelay(pdMS_TO_TICKS(200));
     }
 }
