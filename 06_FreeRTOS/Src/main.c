@@ -123,27 +123,33 @@ void LEDInit()
 
 static void task1_handler(void* parameters) {
     char msg[100];
+    TickType_t last_wakeup_time;
+    last_wakeup_time = xTaskGetTickCount();
     while(1) {
         snprintf(msg,100,"%s\n", (char*)parameters);
         SEGGER_SYSVIEW_PrintfTarget(msg);
-        vTaskDelay(pdMS_TO_TICKS(1000));
+        vTaskDelayUntil(&last_wakeup_time, pdMS_TO_TICKS(1000));
     }
 }
 
 static void task2_handler(void* parameters) {
     char msg[100];
+    TickType_t last_wakeup_time;
+    last_wakeup_time = xTaskGetTickCount();
     while(1) {
         snprintf(msg,100,"%s\n", (char*)parameters);
         SEGGER_SYSVIEW_PrintfTarget(msg);
-        vTaskDelay(pdMS_TO_TICKS(800));
+        vTaskDelayUntil(&last_wakeup_time, pdMS_TO_TICKS(800));
     }
 }
 
 static void task3_handler(void* parameters) {
     char msg[100];
+    TickType_t last_wakeup_time;
+    last_wakeup_time = xTaskGetTickCount();
     while(1) {
         snprintf(msg,100,"%s\n", (char*)parameters);
         SEGGER_SYSVIEW_PrintfTarget(msg);
-        vTaskDelay(pdMS_TO_TICKS(400));
+        vTaskDelayUntil(&last_wakeup_time, pdMS_TO_TICKS(400));
     }
 }
