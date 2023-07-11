@@ -94,7 +94,7 @@ int main(void)
 
     configASSERT(status_task == pdPASS);
 
-    status_task = xTaskCreate(task3_handler, "Task-2", 200, "Hello world from Task-2", 2, &task3_handle);
+    status_task = xTaskCreate(task3_handler, "Task-3", 200, "Hello world from Task-2", 2, &task3_handle);
 
     configASSERT(status_task == pdPASS);
 
