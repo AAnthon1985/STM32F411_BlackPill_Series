@@ -37,6 +37,7 @@ int __io_putchar(int ch)
 
 static void task1_handler(void* parameters);
 static void task2_handler(void* parameters);
+static void task3_handler(void* parameters);
 
 int main(void)
 {
@@ -71,6 +72,7 @@ int main(void)
 
     TaskHandle_t task1_handle;
     TaskHandle_t task2_handle;
+    TaskHandle_t task3_handle;
     BaseType_t status_task;
 
     vInitPrioGroupValue();
@@ -89,6 +91,10 @@ int main(void)
     configASSERT(status_task == pdPASS);
 
     status_task = xTaskCreate(task2_handler, "Task-2", 200, "Hello world from Task-2", 2, &task2_handle);
+
+    configASSERT(status_task == pdPASS);
+
+    status_task = xTaskCreate(task3_handler, "Task-2", 200, "Hello world from Task-2", 2, &task3_handle);
 
     configASSERT(status_task == pdPASS);
 
@@ -120,7 +126,7 @@ static void task1_handler(void* parameters) {
     while(1) {
         snprintf(msg,100,"%s\n", (char*)parameters);
         SEGGER_SYSVIEW_PrintfTarget(msg);
-        vTaskDelay(pdMS_TO_TICKS(100));
+        vTaskDelay(pdMS_TO_TICKS(1000));
     }
 }
 
@@ -129,6 +135,15 @@ static void task2_handler(void* parameters) {
     while(1) {
         snprintf(msg,100,"%s\n", (char*)parameters);
         SEGGER_SYSVIEW_PrintfTarget(msg);
-        vTaskDelay(pdMS_TO_TICKS(200));
+        vTaskDelay(pdMS_TO_TICKS(800));
+    }
+}
+
+static void task3_handler(void* parameters) {
+    char msg[100];
+    while(1) {
+        snprintf(msg,100,"%s\n", (char*)parameters);
+        SEGGER_SYSVIEW_PrintfTarget(msg);
+        vTaskDelay(pdMS_TO_TICKS(400));
     }
 }
