@@ -1,2 +1,2 @@
-# 03 UART
-Basic setup of how to use the UART2 peripheral
+# 09 Bootloader
+Basic setup of how to write a custom bootloader
