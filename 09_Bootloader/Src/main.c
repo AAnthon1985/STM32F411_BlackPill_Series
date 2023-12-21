@@ -19,13 +19,14 @@
 #include "stm32f4xx_ll_usart.h"
 
 void LEDInit();
-void UARTInit();
+void USART1Init();
+void USART2Init();
 
 // To use printf() without modifying the syscalls.c file
 int __io_putchar(int ch)
 {
-    while (!LL_USART_IsActiveFlag_TXE(USART2)) {}
-    LL_USART_TransmitData8(USART2, ch);
+    while (!LL_USART_IsActiveFlag_TXE(USART1)) {}
+    LL_USART_TransmitData8(USART1, ch);
     return ch;
 }
 
@@ -85,7 +86,7 @@ void USART1Init() {
     LL_GPIO_Init(GPIOA, &PA_UART1_Init);
 
     // Initialize UART1
-    LL_APB1_GRP1_EnableClock(LL_APB2_GRP1_PERIPH_USART1);
+    LL_APB2_GRP1_EnableClock(LL_APB2_GRP1_PERIPH_USART1);
     LL_USART_InitTypeDef UART1Init = {0};
     UART1Init.BaudRate = 115200;
     UART1Init.DataWidth = LL_USART_DATAWIDTH_8B;
