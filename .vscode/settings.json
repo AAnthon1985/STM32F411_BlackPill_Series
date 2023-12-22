@@ -17,6 +17,8 @@
         "freertos.h": "c",
         "portable.h": "c",
         "list.h": "c",
-        "stdio.h": "c"
+        "stdio.h": "c",
+        "stm32f4xx_ll_usart.h": "c",
+        "stm32f4xx_ll_exti.h": "c"
     }
 }

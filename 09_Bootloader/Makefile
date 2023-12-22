@@ -9,6 +9,7 @@ OBJS += $(OUTPUT)/stm32f4xx_ll_gpio.o
 OBJS += $(OUTPUT)/stm32f4xx_ll_utils.o
 OBJS += $(OUTPUT)/stm32f4xx_ll_usart.o
 OBJS += $(OUTPUT)/stm32f4xx_ll_rcc.o
+OBJS += $(OUTPUT)/stm32f4xx_ll_exti.o
 OBJS += $(OUTPUT)/syscalls.o
 OBJS += $(OUTPUT)/startup_stm32f411xe.o
 # CFLAGS will be passed to the compiler
