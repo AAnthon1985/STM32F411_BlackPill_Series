@@ -19,6 +19,8 @@
 #include "stm32f4xx_ll_usart.h"
 #include "stm32f4xx_ll_exti.h"
 
+#define FLASH_SECTOR2_BASE_ADDRESS 0x08008000U
+
 void LEDInit(void);
 void BTNInit(void);
 void USART1Init(void);
@@ -173,8 +175,31 @@ void bootloader_uart_read_data(void) {
     // TODO
 }
 
+/*  Code to jump to user application
+    Here we are assuming FLASH_SECTOR2_BASE_ADDRESS
+    is where the user application is stored
+ */
 void bootloader_jump_to_user_application(void) {
-    // TODO
+    // Just a function pointer to hold the address of the reset handler of the user app
+    void (*app_reset_handler)(void);
+    printf("BL_DEBUG_MSG:bootloeader_jump_to_user_app\r\n");
+
+    // Configure the MSP by reading the value from the base address of the sector 2
+    u_int32_t msp_value = *(volatile uint32_t *)FLASH_SECTOR2_BASE_ADDRESS;
+    printf("BL_DEBUG_MSG: MSP value: %#\r\n", msp_value);
+
+    // This function comes from CMSIS
+    __set_MSP(msp_value);
+
+    // SCB->VTOR = FLASH_SECTOR1_BASE_ADDRESS;
+    // Fetch the reset handler address of the user application from location FLASH_SECTOR2_BASE_ADDRESS+4
+    uint32_t resethandler_address = *(volatile uint32_t *) (FLASH_SECTOR2_BASE_ADDRESS + 4);
+
+    app_reset_handler = (void*) resethandler_address;
+    printf("BL_DEBUG_MSG: app reset handler address: %#x\r\n", app_reset_handler);
+
+    // Jump to reset handler of the user application
+    app_reset_handler();
 }
 
 void EXTI0_IRQHandler() {

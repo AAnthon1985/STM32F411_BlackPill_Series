@@ -28,7 +28,7 @@ $(OUTPUT)/%.o: ./Src/%.c
 $(OUTPUT)/%.o: ../STM32CubeF4/Drivers/CMSIS/Device/ST/STM32F4xx/Source/Templates/%.c
 	$(CC) $(CFLAGS) $< -o $@
 
-$(OUTPUT)/%.o: ../STM32CubeF4/Drivers/CMSIS/Device/ST/STM32F4xx/Source/Templates/gcc/%.s
+$(OUTPUT)/%.o: ./Src/%.s
 	$(CC) $(SFLAGS) $< -o $@
 
 $(OUTPUT)/$(BIN).elf: $(OBJS)
