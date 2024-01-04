@@ -19,7 +19,7 @@
 #include "stm32f4xx_ll_usart.h"
 #include "stm32f4xx_ll_exti.h"
 
-#define FLASH_SECTOR2_BASE_ADDRESS 0x08008000U
+#define FLASH_SECTOR2_BASE_ADDRESS 0x08008000UL
 
 void LEDInit(void);
 void BTNInit(void);
@@ -31,8 +31,8 @@ void bootloader_jump_to_user_application(void);
 // To use printf() without modifying the syscalls.c file
 int __io_putchar(int ch)
 {
-    while (!LL_USART_IsActiveFlag_TXE(USART1)) {}
-    LL_USART_TransmitData8(USART1, ch);
+    while (!LL_USART_IsActiveFlag_TXE(USART2)) {}
+    LL_USART_TransmitData8(USART2, ch);
     return ch;
 }
 
@@ -49,16 +49,19 @@ int main(void)
     USART2Init();
     LL_GPIO_SetOutputPin(GPIOC, LL_GPIO_PIN_13);
     // char flag = 1;
+    
+    bootloader_jump_to_user_application();
 
+    printf("System initialized\r\n");
     // Decision making code
     char btn_pressed = 0;
     btn_pressed = check_btn_pressed();
     if(btn_pressed) {
         // Print bootloader message
-        bootloader_uart_read_data();
+        // bootloader_uart_read_data();
     } else {
         // Go to application code
-        bootloader_jump_to_user_application();
+        // bootloader_jump_to_user_application();
     }
     
     /* Loop forever */
@@ -182,11 +185,11 @@ void bootloader_uart_read_data(void) {
 void bootloader_jump_to_user_application(void) {
     // Just a function pointer to hold the address of the reset handler of the user app
     void (*app_reset_handler)(void);
-    printf("BL_DEBUG_MSG:bootloeader_jump_to_user_app\r\n");
+    printf("BL_DEBUG_MSG: bootloader_jump_to_user_app\r\n");
 
     // Configure the MSP by reading the value from the base address of the sector 2
     u_int32_t msp_value = *(volatile uint32_t *)FLASH_SECTOR2_BASE_ADDRESS;
-    printf("BL_DEBUG_MSG: MSP value: %#\r\n", msp_value);
+    printf("BL_DEBUG_MSG: MSP value: %#lx\r\n", msp_value);
 
     // This function comes from CMSIS
     __set_MSP(msp_value);
@@ -196,7 +199,7 @@ void bootloader_jump_to_user_application(void) {
     uint32_t resethandler_address = *(volatile uint32_t *) (FLASH_SECTOR2_BASE_ADDRESS + 4);
 
     app_reset_handler = (void*) resethandler_address;
-    printf("BL_DEBUG_MSG: app reset handler address: %#x\r\n", app_reset_handler);
+    printf("BL_DEBUG_MSG: app reset handler address: %p\r\n", app_reset_handler);
 
     // Jump to reset handler of the user application
     app_reset_handler();
