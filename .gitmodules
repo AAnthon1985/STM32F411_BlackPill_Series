@@ -1,3 +1,6 @@
 [submodule "STM32CubeF4"]
 	path = STM32CubeF4
 	url = https://github.com/STMicroelectronics/STM32CubeF4.git
+[submodule "10_LVGL/lvgl"]
+	path = 10_LVGL/lvgl
+	url = https://github.com/lvgl/lvgl.git
